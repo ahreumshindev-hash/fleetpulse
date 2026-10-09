@@ -1,13 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-export interface TestRun {
-  id: string
-  deviceId: string
-  name: string
-  status: 'queued' | 'running' | 'passed' | 'failed'
-  progress: number // 0~100
-}
+import type { TestRun } from '@/types'
 
 export const useRunsStore = defineStore('runs', () => {
   const runs = ref<TestRun[]>([])

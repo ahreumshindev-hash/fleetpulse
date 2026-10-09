@@ -1,11 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-export interface Device {
-  id: string
-  name: string
-  status: 'online' | 'offline' | 'busy' | 'error'
-}
+import type { Device } from '@/types'
 
 export const useDeviceStore = defineStore('devices', () => {
   const devices = ref<Device[]>([])

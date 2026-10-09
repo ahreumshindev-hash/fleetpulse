@@ -5,9 +5,17 @@ import App from './App.vue'
 import router from './router'
 import './assets/main.css'
 
-const app = createApp(App)
+import { useDeviceStore } from './stores/devices'
+import { useRunsStore } from './stores/runs'
+import { createMockDevices, createMockRuns } from './data/mocks'
 
-app.use(createPinia())
+const app = createApp(App)
+const pinia = createPinia()
+
+app.use(pinia)
 app.use(router)
+
+useDeviceStore(pinia).setDevices(createMockDevices())
+useRunsStore(pinia).setRuns(createMockRuns())
 
 app.mount('#app')
