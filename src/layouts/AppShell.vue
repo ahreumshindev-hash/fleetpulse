@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { onMounted, onUnmounted } from 'vue'
+import { useDeviceSimulation } from '@/composables/useDeviceSimulation'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 
 const menus = [
@@ -20,6 +22,10 @@ const pageTitle = computed(() => {
   }
   return titles[route.path] ?? 'FleetPulse'
 })
+
+const { isRunning, start, stop } = useDeviceSimulation()
+onMounted(start)
+onUnmounted(stop)
 </script>
 <template>
   <div class="flex h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -45,7 +51,16 @@ const pageTitle = computed(() => {
         class="flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"
       >
         <h2 class="text-lg font-semibold">{{ pageTitle }}</h2>
-        <ThemeToggle />
+        <div class="flex items-center gap-3">
+          <span
+            v-if="isRunning"
+            class="flex items-center gap-1.5 text-xs font-medium text-green-600 dark:text-green-400"
+          >
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            LIVE
+          </span>
+          <ThemeToggle />
+        </div>
       </header>
 
       <main class="flex-1 p-6 overflow-auto">

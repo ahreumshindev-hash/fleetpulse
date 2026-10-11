@@ -20,8 +20,12 @@ export const useDeviceStore = defineStore('devices', () => {
     selectedDeviceId.value = id
   }
   function updateDeviceStatus(id: string, status: Device['status']) {
+    updateDevice(id, { status })
+  }
+
+  function updateDevice(id: string, patch: Partial<Device>) {
     const device = devices.value.find((d) => d.id === id)
-    if (device) device.status = status
+    if (device) Object.assign(device, patch)
   }
 
   return {
@@ -33,5 +37,6 @@ export const useDeviceStore = defineStore('devices', () => {
     setDevices,
     selectDevice,
     updateDeviceStatus,
+    updateDevice,
   }
 })
