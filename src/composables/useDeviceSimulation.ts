@@ -16,6 +16,10 @@ function randomStatus(current: DeviceStatus): DeviceStatus {
   return current
 }
 
+function clamp(value: number, min = 0, max = 100) {
+  return Math.min(max, Math.max(min, value))
+}
+
 export function useDeviceSimulation() {
   const devicesStore = useDeviceStore()
   const runsStore = useRunsStore()
@@ -25,8 +29,12 @@ export function useDeviceSimulation() {
   function tickDevices() {
     for (const device of devicesStore.devices) {
       const battery = Math.max(5, device.battery - Math.floor(Math.random() * 3))
+      const cpu = clamp(device.cpu + Math.floor(Math.random() * 17) - 8)
+      const memory = clamp(device.memory + Math.floor(Math.random() * 11) - 5)
       devicesStore.updateDevice(device.id, {
         battery,
+        cpu,
+        memory,
         status: randomStatus(device.status),
         lastSeen: new Date().toISOString(),
       })
@@ -46,7 +54,7 @@ export function useDeviceSimulation() {
         runsStore.updateRun(run.id, { progress: next })
       }
     }
-    // 대기열 → 실행 (동시 실행 최대 3건)
+
     const runningCount = runsStore.runs.filter((r) => r.status === 'running').length
     if (runningCount < 3) {
       const queued = runsStore.runs.find((r) => r.status === 'queued')

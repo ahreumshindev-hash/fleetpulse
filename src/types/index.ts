@@ -8,6 +8,10 @@ export interface Device {
   osVersion: string
   status: DeviceStatus
   battery: number // 0~100
+
+  cpu: number // 0~100
+  memory: number // 0~100
+
   lastSeen: string // ISO timestamp
 }
 

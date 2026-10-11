@@ -11,6 +11,8 @@ export function createMockDevices(): Device[] {
       osVersion: '15',
       status: 'online',
       battery: 87,
+      cpu: 24,
+      memory: 55,
       lastSeen: now,
     },
     {
@@ -21,6 +23,8 @@ export function createMockDevices(): Device[] {
       osVersion: '15',
       status: 'busy',
       battery: 64,
+      cpu: 78,
+      memory: 71,
       lastSeen: now,
     },
     {
@@ -31,6 +35,8 @@ export function createMockDevices(): Device[] {
       osVersion: '15',
       status: 'online',
       battery: 92,
+      cpu: 0,
+      memory: 0,
       lastSeen: now,
     },
     {
@@ -41,6 +47,8 @@ export function createMockDevices(): Device[] {
       osVersion: '14',
       status: 'offline',
       battery: 45,
+      cpu: 95,
+      memory: 88,
       lastSeen: now,
     },
     {
@@ -51,6 +59,8 @@ export function createMockDevices(): Device[] {
       osVersion: '14',
       status: 'online',
       battery: 78,
+      cpu: 18,
+      memory: 40,
       lastSeen: now,
     },
     {
@@ -61,6 +71,8 @@ export function createMockDevices(): Device[] {
       osVersion: '15',
       status: 'error',
       battery: 23,
+      cpu: 74,
+      memory: 25,
       lastSeen: now,
     },
     {
@@ -71,6 +83,8 @@ export function createMockDevices(): Device[] {
       osVersion: '15',
       status: 'busy',
       battery: 56,
+      cpu: 22,
+      memory: 45,
       lastSeen: now,
     },
     {
@@ -81,6 +95,8 @@ export function createMockDevices(): Device[] {
       osVersion: '15',
       status: 'online',
       battery: 100,
+      cpu: 88,
+      memory: 71,
       lastSeen: now,
     },
   ]

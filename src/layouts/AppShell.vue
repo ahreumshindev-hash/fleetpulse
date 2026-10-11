@@ -14,6 +14,7 @@ const menus = [
 
 const route = useRoute()
 const pageTitle = computed(() => {
+  if (route.path.startsWith('/devices/')) return 'Device Detail'
   const titles: Record<string, string> = {
     '/': 'Dashboard',
     '/devices': 'Devices',

@@ -2,7 +2,14 @@
 import { useDeviceStore } from '@/stores/devices'
 import DeviceCard from '@/components/DeviceCard.vue'
 
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const devicesStore = useDeviceStore()
+
+function openDetail(id: string) {
+  devicesStore.selectDevice(id)
+  router.push({ name: 'device-detail', params: { id } })
+}
 </script>
 <template>
   <div>
@@ -18,7 +25,7 @@ const devicesStore = useDeviceStore()
         :key="device.id"
         :device="device"
         :selected="devicesStore.selectedDeviceId === device.id"
-        @select="devicesStore.selectDevice"
+        @select="openDetail"
       />
     </div>
   </div>
