@@ -26,3 +26,14 @@ export interface TestRun {
   startedAt: string // ISO timestamp
   durationSec: number
 }
+
+export type AlertSeverity = 'info' | 'warning' | 'error'
+
+export interface AlertEvent {
+  id: string
+  severity: AlertSeverity
+  message: string
+  deviceId?: string
+  timestamp: string // ISO
+  read: boolean
+}

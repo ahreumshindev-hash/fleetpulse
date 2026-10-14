@@ -1,7 +1,10 @@
 import { ref } from 'vue'
 import { useDeviceStore } from '@/stores/devices'
 import { useRunsStore } from '@/stores/runs'
+import { useAlertsStore } from '@/stores/alerts'
 import type { Device, DeviceStatus } from '@/types'
+
+const alertsStore = useAlertsStore()
 
 const TICK_MS = 3000
 
@@ -28,16 +31,28 @@ export function useDeviceSimulation() {
 
   function tickDevices() {
     for (const device of devicesStore.devices) {
+      const prevStatus = device.status
       const battery = Math.max(5, device.battery - Math.floor(Math.random() * 3))
       const cpu = clamp(device.cpu + Math.floor(Math.random() * 17) - 8)
       const memory = clamp(device.memory + Math.floor(Math.random() * 11) - 5)
+      const status = randomStatus(prevStatus)
       devicesStore.updateDevice(device.id, {
         battery,
         cpu,
         memory,
-        status: randomStatus(device.status),
+        status,
         lastSeen: new Date().toISOString(),
       })
+
+      if (status !== prevStatus) {
+        if (status === 'error') {
+          alertsStore.addAlert('error', `${device.name} encountered an error`, device.id)
+        } else if (status === 'offline') {
+          alertsStore.addAlert('warning', `${device.name} went offline`, device.id)
+        } else if (status === 'online' && (prevStatus === 'error' || prevStatus === 'offline')) {
+          alertsStore.addAlert('info', `${device.name} is back online`, device.id)
+        }
+      }
     }
   }
 
@@ -46,10 +61,19 @@ export function useDeviceSimulation() {
       if (run.status !== 'running') continue
       const next = run.progress + 5 + Math.floor(Math.random() * 15)
       if (next >= 100) {
+        const passed = Math.random() < 0.85
         runsStore.updateRun(run.id, {
-          status: Math.random() < 0.85 ? 'passed' : 'failed',
+          status: passed ? 'passed' : 'failed',
           progress: 100,
         })
+        if (!passed) {
+          const device = devicesStore.devices.find((d) => d.id === run.deviceId)
+          alertsStore.addAlert(
+            'error',
+            `${run.name} failed on ${device?.name ?? run.deviceId}`,
+            run.deviceId,
+          )
+        }
       } else {
         runsStore.updateRun(run.id, { progress: next })
       }

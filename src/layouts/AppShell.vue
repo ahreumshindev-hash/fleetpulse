@@ -3,7 +3,10 @@ import { computed } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { onMounted, onUnmounted } from 'vue'
 import { useDeviceSimulation } from '@/composables/useDeviceSimulation'
+import { useAlertsStore } from '@/stores/alerts'
+
 import ThemeToggle from '@/components/ThemeToggle.vue'
+const alertsStore = useAlertsStore()
 
 const menus = [
   { name: 'Dashboard', path: '/' },
@@ -42,7 +45,15 @@ onUnmounted(stop)
           class="rounded-lg px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           active-class="bg-gray-100 dark:bg-gray-700 font-semibold"
         >
-          {{ menu.name }}
+          <span class="flex items-center justify-between w-full">
+            {{ menu.name }}
+            <span
+              v-if="menu.path === '/alerts' && alertsStore.unreadCount > 0"
+              class="text-xs px-1.5 py-0.5 rounded-full bg-red-500 text-white font-medium"
+            >
+              {{ alertsStore.unreadCount }}
+            </span>
+          </span>
         </RouterLink>
       </nav>
     </aside>
