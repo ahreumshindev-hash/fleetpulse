@@ -4,8 +4,6 @@ import { useRunsStore } from '@/stores/runs'
 import { useAlertsStore } from '@/stores/alerts'
 import type { Device, DeviceStatus } from '@/types'
 
-const alertsStore = useAlertsStore()
-
 const TICK_MS = 3000
 
 function randomStatus(current: DeviceStatus): DeviceStatus {
@@ -25,6 +23,7 @@ function clamp(value: number, min = 0, max = 100) {
 
 export function useDeviceSimulation() {
   const devicesStore = useDeviceStore()
+  const alertsStore = useAlertsStore()
   const runsStore = useRunsStore()
   const isRunning = ref(false)
   let timer: ReturnType<typeof setInterval> | null = null
