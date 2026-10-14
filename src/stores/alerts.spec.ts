@@ -34,22 +34,22 @@ describe('useAlertsStore', () => {
       const store = useAlertsStore()
       store.addAlert('info', 'Hello')
 
-      expect(store.alerts[0].id).toBeTruthy()
-      expect(store.alerts[0].timestamp).toBeDefined()
+      expect(store.alerts[0]!.id).toBeTruthy()
+      expect(store.alerts[0]!.timestamp).toBeDefined()
     })
 
     it('stores the deviceId when provided', () => {
       const store = useAlertsStore()
       store.addAlert('error', 'Device crashed', 'device-42')
 
-      expect(store.alerts[0].deviceId).toBe('device-42')
+      expect(store.alerts[0]!.deviceId).toBe('device-42')
     })
 
     it('leaves deviceId undefined when omitted', () => {
       const store = useAlertsStore()
       store.addAlert('info', 'No device')
 
-      expect(store.alerts[0].deviceId).toBeUndefined()
+      expect(store.alerts[0]!.deviceId).toBeUndefined()
     })
 
     it('gives each alert a unique id', () => {
@@ -83,8 +83,8 @@ describe('useAlertsStore', () => {
       for (let i = 0; i < MAX_ALERTS + 5; i++) store.addAlert('info', `alert ${i}`)
 
       expect(store.alerts).toHaveLength(MAX_ALERTS)
-      expect(store.alerts[0].message).toBe('alert 54') // newest kept
-      expect(store.alerts[MAX_ALERTS - 1].message).toBe('alert 5') // oldest kept
+      expect(store.alerts[0]!.message).toBe('alert 54') // newest kept
+      expect(store.alerts[MAX_ALERTS - 1]!.message).toBe('alert 5') // oldest kept
       expect(store.alerts.some((a) => a.message === 'alert 0')).toBe(false)
     })
   })
@@ -103,7 +103,7 @@ describe('useAlertsStore', () => {
       const store = useAlertsStore()
       store.addAlert('info', 'a')
       store.addAlert('info', 'b')
-      store.alerts[0].read = true
+      store.alerts[0]!.read = true
 
       expect(store.unreadCount).toBe(1)
     })

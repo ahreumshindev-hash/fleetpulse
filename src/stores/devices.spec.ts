@@ -158,7 +158,7 @@ describe('useDeviceStore', () => {
 
       expect(() => store.updateDeviceStatus('nope', 'offline')).not.toThrow()
       expect(store.devices).toHaveLength(1)
-      expect(store.devices[0].status).toBe('online')
+      expect(store.devices[0]!.status).toBe('online')
     })
   })
 
@@ -181,7 +181,7 @@ describe('useDeviceStore', () => {
       store.setDevices([makeDevice({ id: 'a' }), makeDevice({ id: 'b', name: 'Keep' })])
       store.updateDevice('a', { name: 'Changed' })
 
-      expect(store.devices[1].name).toBe('Keep')
+      expect(store.devices[1]!.name).toBe('Keep')
     })
 
     it('does nothing for an unknown id', () => {

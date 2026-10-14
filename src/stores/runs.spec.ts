@@ -77,7 +77,7 @@ describe('useRunsStore', () => {
       store.setRuns([makeRun({ id: 'a' }), makeRun({ id: 'b', progress: 7 })])
       store.updateRun('a', { progress: 99 })
 
-      expect(store.runs[1].progress).toBe(7)
+      expect(store.runs[1]!.progress).toBe(7)
     })
 
     it('does nothing for an unknown id', () => {
@@ -86,7 +86,7 @@ describe('useRunsStore', () => {
 
       expect(() => store.updateRun('nope', { status: 'failed' })).not.toThrow()
       expect(store.runs).toHaveLength(1)
-      expect(store.runs[0].status).toBe('queued')
+      expect(store.runs[0]!.status).toBe('queued')
     })
   })
 
