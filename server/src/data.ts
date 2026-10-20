@@ -1,4 +1,4 @@
-import type { Device } from './types'
+import type { Device, TestRun, AlertEvent } from './types'
 
 export const devices: Device[] = [
   {
@@ -96,5 +96,63 @@ export const devices: Device[] = [
     cpu: 88,
     memory: 71,
     lastSeen: new Date().toISOString(),
+  },
+]
+
+export const runs: TestRun[] = [
+  {
+    id: 'r-001',
+    deviceId: 'd-001',
+    name: 'Smoke suite',
+    status: 'running',
+    progress: 45,
+    startedAt: new Date().toISOString(),
+    durationSec: 0,
+  },
+  {
+    id: 'r-002',
+    deviceId: 'd-002',
+    name: 'Regression',
+    status: 'queued',
+    progress: 0,
+    startedAt: new Date().toISOString(),
+    durationSec: 0,
+  },
+  {
+    id: 'r-003',
+    deviceId: 'd-003',
+    name: 'Voice Test',
+    status: 'running',
+    progress: 68,
+    startedAt: new Date().toISOString(),
+    durationSec: 0,
+  },
+  {
+    id: 'r-004',
+    deviceId: 'd-004',
+    name: 'Smoke suite2',
+    status: 'running',
+    progress: 12,
+    startedAt: new Date().toISOString(),
+    durationSec: 0,
+  },
+]
+
+export const alerts: AlertEvent[] = [
+  {
+    id: 'a-1',
+    severity: 'warning',
+    message: 'Battery low on Pixel 8',
+    deviceId: 'd-001',
+    timestamp: new Date().toISOString(),
+    read: false,
+  },
+  {
+    id: 'a-2',
+    severity: 'warning',
+    message: 'Battery low on Pixel 3',
+    deviceId: 'd-003',
+    timestamp: new Date().toISOString(),
+    read: false,
   },
 ]

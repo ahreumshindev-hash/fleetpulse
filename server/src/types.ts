@@ -12,3 +12,26 @@ export interface Device {
   memory: number
   lastSeen: string
 }
+
+export type RunStatus = 'queued' | 'running' | 'passed' | 'failed'
+
+export interface TestRun {
+  id: string
+  deviceId: string
+  name: string
+  status: RunStatus
+  progress: number
+  startedAt: string
+  durationSec: number
+}
+
+export type AlertSeverity = 'info' | 'warning' | 'error'
+
+export interface AlertEvent {
+  id: string
+  severity: AlertSeverity
+  message: string
+  deviceId?: string
+  timestamp: string
+  read: boolean
+}
