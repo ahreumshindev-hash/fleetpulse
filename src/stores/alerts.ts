@@ -25,5 +25,9 @@ export const useAlertsStore = defineStore('alerts', () => {
     for (const alert of alerts.value) alert.read = true
   }
 
-  return { alerts, unreadCount, addAlert, markAllRead }
+  function setAlerts(list: AlertEvent[]) {
+    alerts.value = list
+  }
+
+  return { alerts, unreadCount, addAlert, markAllRead, setAlerts }
 })

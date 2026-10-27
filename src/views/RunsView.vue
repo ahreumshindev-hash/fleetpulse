@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { api } from '@/api'
 import { ref, computed } from 'vue'
 import { useRunsStore } from '@/stores/runs'
 import { useDeviceStore } from '@/stores/devices'
@@ -35,17 +36,10 @@ const availableDevices = computed(() =>
   devicesStore.devices.filter((d) => d.status === 'online' || d.status === 'busy'),
 )
 
-function queueRun() {
+async function queueRun() {
   if (!selectedDeviceId.value) return
-  runsStore.addRun({
-    id: `r-${Date.now()}`,
-    deviceId: selectedDeviceId.value,
-    name: selectedTestName.value,
-    status: 'queued',
-    progress: 0,
-    startedAt: new Date().toISOString(),
-    durationSec: 0,
-  })
+  const created = await api.createRun(selectedDeviceId.value, selectedTestName.value)
+  runsStore.addRun(created)
   selectedDeviceId.value = ''
   showForm.value = false
 }

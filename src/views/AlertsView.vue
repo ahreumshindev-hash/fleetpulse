@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { api } from '@/api'
 import { useAlertsStore } from '@/stores/alerts'
 import { useDeviceStore } from '@/stores/devices'
 import type { AlertSeverity } from '@/types'
@@ -28,6 +29,11 @@ function timeAgo(iso: string) {
   const hours = Math.floor(minutes / 60)
   return `${hours}h ago`
 }
+
+async function markAllRead() {
+  await api.markAlertsRead()
+  alertsStore.markAllRead()
+}
 </script>
 
 <template>
@@ -43,7 +49,7 @@ function timeAgo(iso: string) {
         </span>
       </h3>
       <button
-        @click="alertsStore.markAllRead()"
+        @click="markAllRead()"
         class="px-3 py-1.5 text-sm rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
       >
         Mark all read
