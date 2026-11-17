@@ -2,104 +2,40 @@ import { ref } from 'vue'
 import { useDeviceStore } from '@/stores/devices'
 import { useRunsStore } from '@/stores/runs'
 import { useAlertsStore } from '@/stores/alerts'
-import type { Device, DeviceStatus } from '@/types'
-
-const TICK_MS = 3000
-
-function randomStatus(current: DeviceStatus): DeviceStatus {
-  const roll = Math.random()
-  if (current === 'error' || current === 'offline') {
-    return roll < 0.3 ? 'online' : current // 30% 확률로 복구
-  }
-  if (roll < 0.06) return 'error'
-  if (roll < 0.12) return 'offline'
-  if (roll < 0.4) return current === 'busy' ? 'online' : 'busy'
-  return current
-}
-
-function clamp(value: number, min = 0, max = 100) {
-  return Math.min(max, Math.max(min, value))
-}
+import { api } from '@/api'
 
 export function useDeviceSimulation() {
   const devicesStore = useDeviceStore()
-  const alertsStore = useAlertsStore()
   const runsStore = useRunsStore()
+  const alertsStore = useAlertsStore()
   const isRunning = ref(false)
-  let timer: ReturnType<typeof setInterval> | null = null
+  let timer: ReturnType<typeof setInterval> | undefined
 
-  function tickDevices() {
-    for (const device of devicesStore.devices) {
-      const prevStatus = device.status
-      const battery = Math.max(5, device.battery - Math.floor(Math.random() * 3))
-      const cpu = clamp(device.cpu + Math.floor(Math.random() * 17) - 8)
-      const memory = clamp(device.memory + Math.floor(Math.random() * 11) - 5)
-      const status = randomStatus(prevStatus)
-      devicesStore.updateDevice(device.id, {
-        battery,
-        cpu,
-        memory,
-        status,
-        lastSeen: new Date().toISOString(),
-      })
-
-      if (status !== prevStatus) {
-        if (status === 'error') {
-          alertsStore.addAlert('error', `${device.name} encountered an error`, device.id)
-        } else if (status === 'offline') {
-          alertsStore.addAlert('warning', `${device.name} went offline`, device.id)
-        } else if (status === 'online' && (prevStatus === 'error' || prevStatus === 'offline')) {
-          alertsStore.addAlert('info', `${device.name} is back online`, device.id)
-        }
-      }
-    }
-  }
-
-  function tickRuns() {
-    for (const run of runsStore.runs) {
-      if (run.status !== 'running') continue
-      const next = run.progress + 5 + Math.floor(Math.random() * 15)
-      if (next >= 100) {
-        const passed = Math.random() < 0.85
-        runsStore.updateRun(run.id, {
-          status: passed ? 'passed' : 'failed',
-          progress: 100,
-        })
-        if (!passed) {
-          const device = devicesStore.devices.find((d) => d.id === run.deviceId)
-          alertsStore.addAlert(
-            'error',
-            `${run.name} failed on ${device?.name ?? run.deviceId}`,
-            run.deviceId,
-          )
-        }
-      } else {
-        runsStore.updateRun(run.id, { progress: next })
-      }
-    }
-
-    const runningCount = runsStore.runs.filter((r) => r.status === 'running').length
-    if (runningCount < 3) {
-      const queued = runsStore.runs.find((r) => r.status === 'queued')
-      if (queued) runsStore.updateRun(queued.id, { status: 'running', progress: 5 })
+  async function poll() {
+    try {
+      const [devices, runs, alerts] = await Promise.all([
+        api.getDevices(),
+        api.getRuns(),
+        api.getAlerts(),
+      ])
+      devicesStore.setDevices(devices)
+      runsStore.setRuns(runs)
+      alertsStore.setAlerts(alerts)
+    } catch (err) {
+      console.error('Poll failed', err)
     }
   }
 
   function start() {
     if (isRunning.value) return
     isRunning.value = true
-    timer = setInterval(() => {
-      tickDevices()
-      tickRuns()
-    }, TICK_MS)
+    poll()
+    timer = setInterval(poll, 3000)
   }
 
   function stop() {
     isRunning.value = false
-    if (timer) {
-      clearInterval(timer)
-      timer = null
-    }
+    if (timer) clearInterval(timer)
   }
 
   return { isRunning, start, stop }

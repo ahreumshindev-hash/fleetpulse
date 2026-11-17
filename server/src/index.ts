@@ -3,6 +3,7 @@ import cors from 'cors'
 import devicesRouter from './routes/devices'
 import runsRouter from './routes/runs'
 import alertsRouter from './routes/alerts'
+import { startSimulation } from './simulate'
 
 const app = express()
 const PORT = 3001
@@ -20,3 +21,5 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`API listening on http://localhost:${PORT}`)
 })
+
+startSimulation()
